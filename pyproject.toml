@@ -1,0 +1,100 @@
+[tool.poetry]
+name = "fishrace"
+description = "race some fish"
+readme = "README.md"
+authors = ["Dan Porter"]
+version = "0.0.0"
+
+[[tool.poetry.source]]
+name = "Honor devpi"
+url = "https://python-packages.honordev.com/build/dev/+simple"
+priority = 'default'
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+# Packages included for bootstrapping a project from a template
+# Feel free to delete this group after cookiecutting a project
+colorama = "^0.4.6"
+ruff = "^0.4.3"
+isort = "^5.13.2"
+[tool.poetry.group.template-bootstrap]
+optional = true
+
+[tool.poetry.group.template-bootstrap.dependencies]
+columbo = ">=0.13.0.post1"
+cookiecutter = ">=2.1.1"
+
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+# Only look at Python source code.
+include = '\.py$'
+target-version = ['py38']
+
+[tool.isort]
+force_single_line = true
+from_first = false
+# For compatibility with black
+# See: https://github.com/timothycrosley/isort/issues/694
+line_length = 88
+include_trailing_comma = true
+use_parentheses = true
+multi_line_output = 3
+
+
+[tool.pylint.master]
+load-plugins = [
+  # Load our custom checkers.
+  'h4lint.checkers',
+
+  # Enforces Sphinx style, Google style, or Numpy style.
+  # This will also catch inconsistencies between signature & docstring!
+  'pylint.extensions.docparams',
+  ]
+# Honor uses Google style. See: http://google.github.io/styleguide/pyguide.html
+default-docstring-type = 'google'
+
+[tool.pylint.messages_control]
+disable = [
+    # Handled by Black
+    'format',
+    # Modules & public methods should be documented, but many simple test
+    # methods lack a docstring.
+    "missing-class-docstring",
+    "missing-function-docstring",
+    # These rules are too restrictive for Honor's preferences
+    # (Violations of these rules need not be fixed)
+    'broad-except',
+    'invalid-name',
+    'missing-module-docstring',
+    'missing-raises-doc',
+    'no-member',
+    'protected-access',
+    'too-few-public-methods',
+    'too-many-arguments',
+    'too-many-branches',
+    'too-many-public-methods',
+    'too-many-return-statements',
+    'h4-no-print',
+    'duplicate-code'
+]
+enable = [
+    # Black does not remove trailing whitespace from comments, but pylint warns
+    # about it. Enable this rule so that we disable trailing whitespace in
+    # Python code AND comments
+    "trailing-whitespace",
+]
+
+[tool.pylint.reports]
+reports = false
+score = false
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = """
+    --junitxml=.quality_reports/unittests.xml
+"""
